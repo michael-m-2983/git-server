@@ -54,7 +54,7 @@ You have two options for docker compose:
 
     This is good if you don't trust future changes to the GitHub repository, or want to use local changes that are not present in the GitHub repository.
 
-    To use it, clone the repository and run `docker-compose up` (or `docker-compose up -d` to run it in detached the background).
+    To use it, clone the repository and run `docker-compose up` (or `docker-compose up -d` to run it  detached in the background).
 
     ```bash
     git clone https://github.com/michael-m-2983/git-server
