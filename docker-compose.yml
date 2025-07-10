@@ -1,0 +1,12 @@
+services:
+  server:
+    build:
+      context: './'
+      network: host
+      dockerfile: 'Dockerfile'
+    user: 1000:1000
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    volumes:
+      - "./repos:/repos"
