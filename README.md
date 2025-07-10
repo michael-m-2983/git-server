@@ -20,7 +20,9 @@ A truly lightweight git server.
 
 ### Setup
 
-You can setup the repository using [Docker Compose](#docker-compose), or [Docker](#docker) without compose.
+The first thing you need to do is create a folder for all the repositories to be stored in: `mkdir repos`.
+
+You can setup the server using [Docker Compose](#docker-compose) or [Docker](#docker) without compose.
 
 If your goal is to just test out the repository and you don't want to set it up long-term, [Docker](#docker) without compose is easier.
 
@@ -30,8 +32,21 @@ You have two options for docker compose:
 
 1. Pull from GitHub
 
-    > [!WARNING]
-    > I need to create a GitHub action for this first.
+    1. Create a new `docker-compose.yml` or open an existing one.
+
+    2. Add `git-server` as a service.
+
+        ```yml
+        services:
+            server:
+                image: ghcr.io/michael-m-2983/git-server:master # You can also use a different tag or commit hash
+                user: 1000:1000 # Make sure this is the correct uid and gid of the user that owns './repos'
+                restart: unless-stopped
+                ports:
+                    - "3000:80" # this maps port 3000 on your machine to port 80 of the container
+                volumes:
+                    - "./repos:/repos"
+        ```
 
 2. Build locally
 
