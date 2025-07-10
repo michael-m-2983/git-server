@@ -62,7 +62,6 @@ docker run \
     --user $(id -u):$(id -g) \
     -p 3000:80 \
     -v "./repos:/repos" \
-    $@ \
     $(docker build --network=host -q .)
 ```
 

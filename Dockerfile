@@ -11,9 +11,4 @@ EXPOSE 80
 VOLUME /repos
 USER lighttpd
 
-CMD [
-    "/usr/sbin/lighttpd", 
-    "-D", 
-    "-f", 
-    "/etc/lighttpd/lighttpd.conf"
-]
+CMD [ "/usr/sbin/lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf" ]
