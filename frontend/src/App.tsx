@@ -1,7 +1,6 @@
-import { ActionIcon, Button, Container, darken, Group, Paper, Skeleton, Space, Table, Tabs, Textarea, TextInput, Timeline, TimelineItem, Title } from '@mantine/core';
-import { BookMarkedIcon, BookOpenTextIcon, CopyIcon, FileIcon, FolderIcon, InfoIcon, TagIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import React from 'react';
+import { ActionIcon, Container, Group, Space, Table, Tabs, TextInput, Timeline, TimelineItem, Title } from '@mantine/core';
+import { CopyIcon, FileIcon, FolderIcon, InfoIcon, TagIcon } from 'lucide-react';
+import {  useState } from 'react';
 import Markdown from 'react-markdown';
 
 function ListItem(props: {
@@ -10,7 +9,7 @@ function ListItem(props: {
 
   const repo = props.repoURL;
 
-  return <Table.Tr>
+  return <Table.Tr style={{cursor: 'pointer'}} onClick={() => window.location.href = `/git/${repo}`}>
     <Table.Td>{repo}</Table.Td>
     <Table.Td>Description will go here.</Table.Td>
   </Table.Tr>
@@ -151,7 +150,13 @@ function ViewPage() {
 }
 
 export default function App() {
-  return <>
-    <ViewPage />
-  </>
+  let repo_name = window.location.pathname;
+  repo_name = repo_name.replace("/git/", "");
+  if(repo_name == "/git") repo_name = ""; // Edgecase with some servers not appending a trailing slash
+
+  if(repo_name.length == 0) {
+    return <ListPage />
+  } else {
+    return <ViewPage />
+  }
 }
