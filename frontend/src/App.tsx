@@ -1,4 +1,5 @@
-import { Card, Container, CopyButton, List, Stack, Table, Title } from '@mantine/core';
+import { Container, Space, Table, TextInput, Title } from '@mantine/core';
+import { useState } from 'react';
 
 function ListItem(props: {
   repoURL: string
@@ -16,17 +17,30 @@ function ListPage() {
   let repo_list = [ //TODO: after UI is done, get this from the server instead
     "python-example-project-1",
     "python-example-project-2",
-    "python-example-project-3"
+    "python-example-project-3",
+    "git-server",
+    "lua-project",
+    "java-project",
+    "some-other-cool-project",
+    "even-cooler-project"
   ];
 
-  let list = repo_list.map(repo =>
-    <ListItem key={repo} repoURL={repo} />
-  );
+  const [search, setSearch] = useState<string>("");
 
   return <>
     <Title order={1} className={"page-title"}>git-server</Title>
 
     <Container size="md">
+
+      <TextInput
+        placeholder='Search'
+        value={search} onChange={(e) => setSearch(e.currentTarget.value)}
+      />
+
+      <Space h="lg" />
+
+
+      {/* TODO: if it becomes needed, implement pagination */}
       <Table stickyHeader withTableBorder highlightOnHover striped>
         <Table.Thead>
           <Table.Tr>
@@ -36,7 +50,9 @@ function ListPage() {
         </Table.Thead>
 
         <Table.Tbody>
-          {list}
+          {repo_list.filter(repo => repo.toLowerCase().includes(search.toLowerCase())).map(repo =>
+            <ListItem key={repo} repoURL={repo} />
+          )}
         </Table.Tbody>
       </Table>
     </Container>
