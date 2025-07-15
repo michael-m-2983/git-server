@@ -152,7 +152,7 @@ function ViewPage() {
 export default function App() {
   let repo_name = window.location.pathname;
   repo_name = repo_name.replace("/git/", "");
-  if(repo_name == "/git") repo_name = ""; // Edgecase with some servers not appending a trailing slash
+  if(repo_name == "/git") repo_name = ""; // Edge case with some servers not appending a trailing slash
 
   if(repo_name.length == 0) {
     return <ListPage />

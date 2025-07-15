@@ -26,7 +26,7 @@ if [ ! -d "$REPO_PATH" ]; then
 
   mkdir -p "$REPO_PATH"
   git init --bare --shared --initial-branch master "$REPO_PATH" >/dev/null 2>/dev/null
-  printf "[http]" >> "$REPO_PATH/config"
+  printf "[http]" >> "$REPO_PATH/config\n"
   printf "    receivepack = true" >> "$REPO_PATH/config"
 fi
 
