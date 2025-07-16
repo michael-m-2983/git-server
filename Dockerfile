@@ -8,6 +8,7 @@ FROM alpine:3.22.0
 
 COPY ./lighttpd.conf /etc/lighttpd/lighttpd.conf
 COPY --chmod=755 ./cgi.sh /usr/local/bin/http-backend-script
+COPY --chmod=755 ./api /usr/local/bin/api
 COPY --from=builder /frontend/dist/index.html /var/www/frontend.html
 
 RUN addgroup -S lighttpd && adduser -S lighttpd -G lighttpd \
