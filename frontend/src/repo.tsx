@@ -1,5 +1,5 @@
-import { ActionIcon, AppShell, Container, Group, Loader, Tabs, TextInput, Title } from '@mantine/core';
-import { CopyIcon, InfoIcon } from 'lucide-react';
+import { ActionIcon, Anchor, AppShell, Breadcrumbs, Button, Container, Group, Loader, Space, Table, Tabs, TextInput, Title } from '@mantine/core';
+import { CopyIcon, DownloadIcon, FileIcon, FolderIcon, InfoIcon } from 'lucide-react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math';
@@ -18,6 +18,107 @@ function useReadme(repoName: string) {
   }, []);
 
   return readme;
+}
+
+function useFileList(repoName: string) {
+  const url = `/api/files.sh/${repoName}`;
+
+  const [files, setFiles] = useState<string[] | undefined>(undefined);
+
+  useEffect(() => {
+    fetch(url)
+      .then(r => r.text())
+      .then(text => text.split("\n"))
+      .then(lines => lines.filter(line => line.length != 0))
+      .then(lines => lines.map(line => "/" + line)) // Append a leading slash to each item
+      .then(setFiles);
+  }, []);
+
+  return files;
+}
+
+function FileBrowserItem(props: {
+  name: string,
+  location?: string,
+  repo?: string,
+  onClick: () => void,
+}) {
+  return <Table.Tr>
+    <Table.Td style={{ cursor: 'pointer' }} onClick={props.onClick}>
+      <Group>
+        {props.name.endsWith("/") ? <FolderIcon /> : <FileIcon />}
+        {props.name}
+      </Group>
+    </Table.Td>
+    <Table.Td>
+      {props.location && props.repo && <Group>
+        <Button size="sm" onClick={() => window.location.href = `/api/raw.sh/${props.repo}${props.location}${props.name}`}>Raw</Button>
+
+        {!props.name.endsWith("/") &&
+          <a href={`/api/raw.sh/${props.repo}${props.location}${props.name}`} target='_blank' download={true}>
+            <ActionIcon>
+              <DownloadIcon />
+            </ActionIcon>
+          </a>
+        }
+      </Group>
+      }
+    </Table.Td>
+  </Table.Tr>
+
+}
+
+function FileBrowser(props: {
+  repoName: string
+}) {
+
+  // The list of all files in the repository
+  let file_list = useFileList(props.repoName);
+
+
+  let [location, setLocation] = useState<string>("/");
+
+  useEffect(() => {
+    if (!location.endsWith("/")) setLocation(location + "/");
+  }, [location]);
+
+  let local_files = [...new Set(file_list
+    ?.filter(file => file.startsWith(location))
+    .map(file => file.replace(location, ""))
+    .map(file => file.includes("/") ? file.split("/")[0] + "/" : file))];
+
+  //TODO: file viewer, download files, ../
+
+  return <>
+    <Breadcrumbs>
+      <Anchor onClick={() => setLocation("/")}>{props.repoName}.git</Anchor>
+
+      {location.substring(1).split("/").filter(s => s.length != 0).map((segment, index) => <Anchor onClick={() => {
+        let reconstructedLocation = "/" + location.substring(1).split("/").slice(0, index + 1).join("/");
+
+        setLocation(reconstructedLocation);
+      }}>
+        {segment}
+      </Anchor>)}
+    </Breadcrumbs>
+
+    <Space h="md" />
+
+    <Table highlightOnHover withTableBorder withRowBorders withColumnBorders>
+      <Table.Tbody>
+
+        {location != "/" && <FileBrowserItem name=".." onClick={() => setLocation(location.split("/").slice(0, -2).join("/"))} />}
+
+        {local_files ? local_files.map(file =>
+          <FileBrowserItem name={file} location={location} repo={props.repoName} onClick={() => {
+            if (file.endsWith("/")) {
+              setLocation(location + file);
+            }
+          }} />
+        ) : <Loader />}
+      </Table.Tbody>
+    </Table>
+  </>
 }
 
 export default function RepoPage(props: {
@@ -43,7 +144,7 @@ export default function RepoPage(props: {
     const baseURL = `/api/raw.sh/${repo_name}/`;
     const src = props.src!.startsWith('./') ? baseURL + props.src!.slice(2) : props.src;
 
-    return <img {...props} src={src} /> 
+    return <img {...props} src={src} />
   };
 
   const tabs = [
@@ -51,29 +152,15 @@ export default function RepoPage(props: {
       name: "README",
       icon: <InfoIcon />,
       content: <>
-        {readme_file_contents ? <Markdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]} components={{img: imageRenderer}}>
+        {readme_file_contents ? <Markdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]} components={{ img: imageRenderer }}>
           {readme_file_contents}
         </Markdown> : <Loader />}</>
+    },
+    {
+      name: "Files",
+      icon: <FolderIcon />,
+      content: <FileBrowser repoName={repo_name} />
     }
-    // {
-    //   name: "Files",
-    //   icon: <FolderIcon />,
-    //   content: <Table highlightOnHover withTableBorder withRowBorders withColumnBorders>
-    //     <Table.Tbody>
-    //       {file_list.map(file =>
-    //         <Table.Tr key={file} style={{ cursor: 'pointer' }}>
-    //           <Table.Td>
-    //             <Group>
-    //               {file.endsWith("/") ? <FolderIcon /> : <FileIcon />}
-    //               {file}
-    //             </Group>
-
-    //           </Table.Td>
-    //         </Table.Tr>
-    //       )}
-    //     </Table.Tbody>
-    //   </Table>
-    // },
     // {
     //   name: "Tags",
     //   icon: <TagIcon />,
@@ -120,7 +207,7 @@ export default function RepoPage(props: {
       <AppShell.Main>
         {tabs.map(tab =>
           <Tabs.Panel value={tab.name} key={tab.name}>
-            <Container size="sm" p="md">
+            <Container fluid p="md">
               {tab.content}
             </Container>
           </Tabs.Panel>
