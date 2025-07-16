@@ -1,8 +1,12 @@
 import { ActionIcon, AppShell, Container, Group, Loader, Tabs, TextInput, Title } from '@mantine/core';
 import { CopyIcon, InfoIcon } from 'lucide-react';
 import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 import copy from 'copy-to-clipboard';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ImgHTMLAttributes } from 'react';
 
 function useReadme(repoName: string) {
   const url = `/api/readme.sh/${repoName}`;
@@ -35,13 +39,21 @@ export default function RepoPage(props: {
   //   }
   // ];
 
+  const imageRenderer = (props: ImgHTMLAttributes<HTMLImageElement>) => {
+    const baseURL = `/api/raw.sh/${repo_name}/`;
+    const src = props.src!.startsWith('./') ? baseURL + props.src!.slice(2) : props.src;
+
+    return <img {...props} src={src} /> 
+  };
+
   const tabs = [
     {
       name: "README",
       icon: <InfoIcon />,
-      content: <>{readme_file_contents ? <Markdown>
-        {readme_file_contents}
-      </Markdown> : <Loader />}</>
+      content: <>
+        {readme_file_contents ? <Markdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]} components={{img: imageRenderer}}>
+          {readme_file_contents}
+        </Markdown> : <Loader />}</>
     }
     // {
     //   name: "Files",
