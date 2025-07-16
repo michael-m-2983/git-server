@@ -3,7 +3,7 @@
 REPO=$(echo "$PATH_INFO" | cut -d'/' -f2)
 FILE_PATH=$(echo "$PATH_INFO" | cut -d'/' -f3-)
 
-if ! echo "$REPO" | grep -qE '^[a-zA-Z0-9\-_/]+$'; then
+if ! echo "$REPO" | grep -qE '^[-a-zA-Z0-9_/]+$'; then
     echo "Status: 400 Bad Request"
     echo "Content-Type: text/plain"
     echo

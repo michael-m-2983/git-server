@@ -12,7 +12,7 @@ fi
 
 REPO="${REPO%.git}"
 
-if ! echo "$REPO" | grep -qE '^[a-zA-Z0-9\-_/]+$'; then
+if ! echo "$REPO" | grep -qE '^[-a-zA-Z0-9_/]+$'; then
     echo "Status: 400 Bad Request"
     echo "Content-Type: text/plain"
     echo
