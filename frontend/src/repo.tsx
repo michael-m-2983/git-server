@@ -8,6 +8,7 @@ import 'katex/dist/katex.min.css';
 import copy from 'copy-to-clipboard';
 import { useEffect, useState, type ImgHTMLAttributes } from 'react';
 import { useFileList, useReadme } from './api';
+import { modals } from '@mantine/modals';
 
 
 export default function RepoPage(props: {
@@ -143,8 +144,11 @@ function FileBrowser(props: {
             if (file.endsWith("/")) {
               setLocation(location + file);
             } else {
-              // setPreview(file);
-              //TODO: modal
+              modals.open({
+                title: file,
+                size: "xl",
+                children: <FileBrowserPreview repo={props.repoName} location={location} file={file} />
+              });
             }
           }} />
         ) : <Loader />}
@@ -161,10 +165,14 @@ function FileBrowserPreview(props: {
   let url = `/api/raw.sh/${props.repo}${props.location}${props.file}`;
   let fileExtension = props.file.split(".").at(-1);
 
+  const baseProps = {
+    width: "100%"
+  }
+
   if (["png", "jpeg", "jpg", "gif", "bmp", "svg", "webp", "jfif", "pjpeg", "pjp"].includes(fileExtension!)) {
-    return <img src={url} />
+    return <img src={url} {...baseProps} />
   } else {
-    return <iframe src={url} />
+    return <iframe src={url} {...baseProps} />
   }
 }
 
