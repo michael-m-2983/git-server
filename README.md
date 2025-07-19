@@ -12,7 +12,6 @@ A truly lightweight git server.
 
 ## Non-features
 
-- There is no web UI (yet)
 - It lacks many features that other setups have. If you want more features, check out [soft-serve](https://github.com/charmbracelet/soft-serve) or [ForgeJo](https://forgejo.org/).
 - It does not have any kind of user authentication
 
