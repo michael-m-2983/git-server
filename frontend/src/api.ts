@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export function useListData(): string[] | undefined {
-    const URL = "/api/list.sh";
+    const URL = "/git/api/list.sh";
 
     const [list, setList] = useState<string[] | undefined>(undefined);
 
@@ -20,7 +20,7 @@ export function useListData(): string[] | undefined {
 }
 
 export function useReadme(repoName: string) {
-    const url = `/api/readme.sh/${repoName}`;
+    const url = `/git/api/readme.sh/${repoName}`;
 
     const [readme, setReadme] = useState<string | undefined>(undefined);
 
@@ -32,7 +32,7 @@ export function useReadme(repoName: string) {
 }
 
 export function useFileList(repoName: string) {
-    const url = `/api/files.sh/${repoName}`;
+    const url = `/git/api/files.sh/${repoName}`;
 
     const [files, setFiles] = useState<string[] | undefined>(undefined);
 

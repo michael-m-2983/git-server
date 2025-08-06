@@ -82,7 +82,7 @@ function Readme(props: { repo: string }) {
   const contents = useReadme(repo_name);
 
   const imageRenderer = (props: ImgHTMLAttributes<HTMLImageElement>) => {
-    const baseURL = `/api/raw.sh/${repo_name}/`;
+    const baseURL = `/git/api/raw.sh/${repo_name}/`;
     const src = props.src!.startsWith('./') ? baseURL + props.src!.slice(2) : props.src;
 
     return <img {...props} src={src} />
@@ -162,7 +162,7 @@ function FileBrowserPreview(props: {
   location: string,
   file: string
 }) {
-  let url = `/api/raw.sh/${props.repo}${props.location}${props.file}`;
+  let url = `/git/api/raw.sh/${props.repo}${props.location}${props.file}`;
   let fileExtension = props.file.split(".").at(-1);
 
   const baseProps = {
@@ -202,10 +202,10 @@ function FileBrowserItem(props: {
 
     <Table.Td>
       {props.location && props.repo && <Group>
-        <Button size="sm" onClick={() => window.location.href = `/api/raw.sh/${props.repo}${props.location}${props.name}`}>Raw</Button>
+        <Button size="sm" onClick={() => window.location.href = `/git/api/raw.sh/${props.repo}${props.location}${props.name}`}>Raw</Button>
 
         {!props.name.endsWith("/") &&
-          <a href={`/api/raw.sh/${props.repo}${props.location}${props.name}`} target='_blank' download={true}>
+          <a href={`/git/api/raw.sh/${props.repo}${props.location}${props.name}`} target='_blank' download={true}>
             <ActionIcon>
               <DownloadIcon />
             </ActionIcon>
