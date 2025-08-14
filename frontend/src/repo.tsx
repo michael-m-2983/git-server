@@ -15,7 +15,7 @@ export default function RepoPage(props: {
   repoName: string
 }) {
   const repo_name = props.repoName;
-  const remote_url = `http://localhost:3000/git/${repo_name}.git`;
+  const remote_url = `http://${window.location.hostname}/git/${repo_name}.git`;
 
 
   const tabs = [
